@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Intercept", "Intercept\Inte
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bresenham_line_drawing", "Bresenham_line_drawing\Bresenham_line_drawing.vcxproj", "{62ADFB9D-22A1-4DDB-A8B3-0DC9689D2807}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shared_library", "Shared_library\Shared_library.vcxitems", "{5AD8D37B-6419-4CD5-9072-BDD83BE07D20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -37,5 +39,10 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BD38989F-AFED-4D1E-A352-9AE00267BA28}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Shared_library\Shared_library.vcxitems*{5ad8d37b-6419-4cd5-9072-bdd83be07d20}*SharedItemsImports = 9
+		Shared_library\Shared_library.vcxitems*{62adfb9d-22a1-4ddb-a8b3-0dc9689d2807}*SharedItemsImports = 4
+		Shared_library\Shared_library.vcxitems*{bffbc3f7-3a3e-4e83-ab0a-026d1ea2b4e3}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal
