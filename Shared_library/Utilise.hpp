@@ -34,5 +34,17 @@ namespace Utilise
 	{
 		return start + (end - start) * t;
 	}
+
+	const float PI = 22.f / 7;
+
+	float toDegree(float radian)
+	{
+		return radian * 180 / PI;
+	}
+
+	float toRadian(float degree)
+	{
+		return degree * PI / 180;
+	}
 }
 #endif
