@@ -6,56 +6,20 @@
 #include <SFML/Graphics.hpp>
 
 #include "Utilise.hpp"
+#include "Bersenham_line.hpp"
 
 const int SCREEN_SIZE = 1000;
-
-std::vector<sf::Vector2u> bersenham_line(sf::Vector2u start, sf::Vector2u end)
-{
-	sf::Vector2i delta(end.x - start.x, end.y - start.y);
-	if (abs(delta.x) >= abs(delta.y))
-	{
-		sf::Vector2i step;
-		step.x = 2 * (delta.x > 0) - 1;
-		step.y = 2 * (delta.y > 0) - 1;
-		delta.x = abs(delta.x); 
-		delta.y = abs(delta.y);
-		std::vector<sf::Vector2u> ans = { start };
-		int p = delta.x - 2 * delta.y;
-		while (start != end)
-		{
-			start.x += step.x;
-			if (p <= 0)
-			{
-				start.y += step.y;
-				p += 2 * delta.x - 2 * delta.y;
-			}
-			else
-				p += -2 * delta.y;
-			ans.push_back(start);
-		}
-		return ans;
-	}
-	else
-	{
-		std::swap(start.x, start.y);
-		std::swap(end.x, end.y);
-		auto ans = bersenham_line(start, end);
-		for (auto& i : ans)
-			std::swap(i.x, i.y);
-		return ans;
-	}
-}
 
 class Chaser
 {
 public:
-	Chaser(sf::Vector2u pos, float speed)
+	Chaser(sf::Vector2i pos, float speed)
 		: m_move_interval(sf::seconds(1.f / (abs(speed) + 1)))
 		, m_path(1, pos)
 		, m_current_index(0)
 	{ }
 
-	void update(sf::Time dt, sf::Vector2u mouse)
+	void update(sf::Time dt, sf::Vector2i mouse)
 	{
 		if (mouse != *m_path.rbegin())
 			setGoal(mouse);
@@ -67,21 +31,21 @@ public:
 		}
 	}
 
-	sf::Vector2u getCoords() const
+	sf::Vector2i getCoords() const
 	{
 		return m_path[m_current_index];
 	}
 private:
-	void setGoal(sf::Vector2u mouse)
+	void setGoal(sf::Vector2i mouse)
 	{
-		sf::Vector2u start = m_path[m_current_index];
+		sf::Vector2i start = m_path[m_current_index];
 		m_path = bersenham_line(start, mouse);
 		m_current_index = 0;
 	}
 private:
 	sf::Time m_move_interval;
 	sf::Time m_elapsed_time;
-	std::vector<sf::Vector2u> m_path;
+	std::vector<sf::Vector2i> m_path;
 	unsigned int m_current_index;
 };
 
@@ -101,7 +65,7 @@ public:
 		m_cursor.setFillColor(sf::Color::Red);
 
 		for (int i = 1; i <= chaser_number; i++)
-			m_chasers.push_back(Chaser(sf::Vector2u(rand() % m_size, rand() % m_size), chaser_speed));
+			m_chasers.push_back(Chaser(sf::Vector2i(rand() % m_size, rand() % m_size), chaser_speed));
 
 		for (int i = 0; i <= size; i++)
 		{
@@ -125,11 +89,9 @@ public:
 	{
 		sf::Vector2i mouse = sf::Mouse::getPosition(*m_window);
 		mouse = sf::Vector2i(sf::Vector2u(mouse.x * 1.f / m_cell_size, mouse.y * 1.f / m_cell_size));
-		mouse.x = std::min<int>(std::max<int>(mouse.x, 0), m_size - 1);
-		mouse.y = std::min<int>(std::max<int>(mouse.y, 0), m_size - 1);
-		if (sf::Vector2u(mouse) != m_mouse_coords)
+		if (mouse != m_mouse_coords)
 		{
-			m_mouse_coords = sf::Vector2u(mouse);
+			m_mouse_coords = mouse;
 			m_trace.clear();
 			sf::RectangleShape prefab(sf::Vector2f(m_cell_size, m_cell_size));
 			prefab.setFillColor(sf::Color::Green);
@@ -160,7 +122,7 @@ public:
 		m_window->draw(m_cursor);
 	}
 
-	sf::Vector2u getMouseCoords() const
+	sf::Vector2i getMouseCoords() const
 	{
 		return m_mouse_coords;
 	}
@@ -168,7 +130,7 @@ private:
 	sf::RenderWindow* m_window;
 	unsigned int m_size;
 	float m_cell_size;
-	sf::Vector2u m_mouse_coords;
+	sf::Vector2i m_mouse_coords;
 	sf::VertexArray m_lines;
 	sf::CircleShape m_cursor;
 

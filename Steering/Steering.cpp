@@ -40,6 +40,12 @@ public:
 							  m_push_speed * std::cos(Utilise::toRadian(-getRotation())));
 		move(velocity * dt.asSeconds());
 	}
+
+	sf::Vector2f getVelocity()
+	{
+		return sf::Vector2f(m_push_speed * std::sin(Utilise::toRadian(-getRotation())),
+							m_push_speed * std::cos(Utilise::toRadian(-getRotation())));
+	}
 public:
 	// The acceleration ~ force applied to the back
 	float push_acceleration;
@@ -56,11 +62,11 @@ class Rider : public Entity, public sf::Drawable
 public:
 	Rider(float jet_strength, float steer_force)
 		: Entity(steer_force)
-		, m_body(sf::Vector2f(10, 30))
+		, m_body(sf::Vector2f(10, 20))
 		, m_straight_acceleration(jet_strength)
 		, m_thrust(false)
 		, m_image_count(20)
-		, m_image_interval(sf::seconds(0.1f))
+		, m_image_interval(sf::seconds(0.05f))
 	{
 		// Utilise::center(m_body);
 		sf::Vector2f size = m_body.getSize();
@@ -142,17 +148,63 @@ private:
 class Chaser : public Rider
 {
 public:
+	enum Type
+	{
+		DIRECT, INTERCEPT
+	};
+public:
 	Chaser(Rider* prey, float jet_strength, float steer_strength)
 		: Rider(0, steer_strength)
 		, m_prey(prey)
+		, m_type(DIRECT)
+		, m_cursor(10, 8)
+		, m_show_cursor(false)
 	{ 
 		m_body.setFillColor(sf::Color::Red);
 		push_acceleration = jet_strength;
+		m_cursor.setFillColor(sf::Color::Red);
+		Utilise::center(m_cursor);
+		std::cout << "Press Enter to switch chasing mode\n";
+	}
+
+	void processInput(const sf::Event& e)
+	{
+		if (e.type == sf::Event::KeyPressed)
+		{
+			if (e.key.code == sf::Keyboard::Enter)
+			{
+				std::cout << "Switched mode. Current mode is ";
+				if (m_type == DIRECT)
+				{
+					m_type = INTERCEPT;
+					std::cout << "INTERCEPT\nPress Spacebar to display prediction\n";
+				}
+				else
+				{
+					m_type = DIRECT;
+					std::cout << "DIRECT CHASING\n";
+				}
+			}
+			else if (e.key.code == sf::Keyboard::Space)
+				m_show_cursor = !m_show_cursor;
+		}
 	}
 
 	void update(sf::Time dt) override
 	{
-		sf::Vector2f dis = m_prey->getPosition() - getPosition();
+		sf::Vector2f dis;
+		if (m_type == DIRECT)
+			dis = m_prey->getPosition() - getPosition();
+		else
+		{
+			float rela_speed = Utilise::lengthOf(getVelocity() - m_prey->getVelocity());
+			float rela_dis = Utilise::lengthOf(getPosition() - m_prey->getPosition());
+			rela_speed += 1.f;
+			float time_to_intercept = rela_dis / rela_speed;
+			m_intercept_point = m_prey->getPosition() + m_prey->getVelocity() * time_to_intercept;
+			dis = m_intercept_point - getPosition();
+			m_cursor.setPosition(m_intercept_point);
+		}
 		dis = Utilise::normalise(translate(dis));
 		if (dis.x >= 0.1f)
 			steer = Entity::LEFT;
@@ -172,8 +224,19 @@ private:
 			point.x * std::cos(Utilise::toRadian(rot)) + point.y * std::sin(Utilise::toRadian(rot)),
 			-point.x * std::sin(Utilise::toRadian(rot)) + point.y * std::cos(Utilise::toRadian(rot)));
 	}
+	
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override
+	{
+		if (m_type == INTERCEPT && m_show_cursor)
+			target.draw(m_cursor, states);
+		target.draw(static_cast<Rider>(*this), states);
+	}
 private:
 	Rider* m_prey;
+	Type m_type;
+	sf::Vector2f m_intercept_point;
+	sf::CircleShape m_cursor;
+	bool m_show_cursor;
 };
 
 int main()
@@ -184,9 +247,9 @@ int main()
 	sf::Time total = elapsed;
 	sf::Time TPF = sf::seconds(1.f / 60);
 
-	Rider bao(100, 100);
+	Rider bao(300, 350);
 	bao.setPosition(300, 300);
-	Chaser killer(&bao, 150, 50);
+	Chaser killer(&bao, 150,350);
 	killer.setPosition(sf::Vector2f());
 
 	while (win.isOpen())
@@ -199,6 +262,7 @@ int main()
 		{
 			if (e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Escape)
 				win.close();
+			killer.processInput(e);
 		}
 		while (elapsed >= TPF)
 		{

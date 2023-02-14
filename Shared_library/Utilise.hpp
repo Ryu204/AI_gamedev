@@ -2,6 +2,7 @@
 #define AI_SHARED_UTILISE
 
 #include <cmath>
+#include <cassert>
 #include <SFML/Graphics.hpp>
 
 namespace Utilise
@@ -37,12 +38,12 @@ namespace Utilise
 
 	const float PI = 22.f / 7;
 
-	float toDegree(float radian)
+	inline float toDegree(float radian)
 	{
 		return radian * 180 / PI;
 	}
 
-	float toRadian(float degree)
+	inline float toRadian(float degree)
 	{
 		return degree * PI / 180;
 	}
