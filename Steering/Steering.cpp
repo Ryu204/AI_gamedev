@@ -21,10 +21,10 @@ public:
 		, steer(NONE)
 		, m_steer_value(steer_force)
 		, m_push_speed(0)
-		, m_drag_constant(0.7f)
-	{	
+		, m_drag_constant(0.05f)
+	{
 		setPosition(SCREEN_SIZE / 2.f, SCREEN_SIZE / 2.f);
-		setRotation(180);
+		//setRotation(-90);
 	}
 
 	void update(sf::Time dt)
@@ -34,17 +34,17 @@ public:
 		if (steer == RIGHT)
 			rotate(abs(m_steer_value) * dt.asSeconds());
 		m_push_speed += push_acceleration * dt.asSeconds();
-		m_push_speed += (-m_drag_constant * m_push_speed) * dt.asSeconds();
+		m_push_speed += (-m_drag_constant * m_push_speed * m_push_speed) * dt.asSeconds();
 		m_push_speed = std::max(0.f, m_push_speed);
-		sf::Vector2f velocity(m_push_speed * std::sin(Utilise::toRadian(-getRotation())),
-							  m_push_speed * std::cos(Utilise::toRadian(-getRotation())));
+		sf::Vector2f velocity(m_push_speed * std::cos(Utilise::toRadian(getRotation())),
+							  m_push_speed * std::sin(Utilise::toRadian(getRotation())));
 		move(velocity * dt.asSeconds());
 	}
 
 	sf::Vector2f getVelocity()
 	{
-		return sf::Vector2f(m_push_speed * std::sin(Utilise::toRadian(-getRotation())),
-							m_push_speed * std::cos(Utilise::toRadian(-getRotation())));
+		return sf::Vector2f(m_push_speed * std::cos(Utilise::toRadian(getRotation())),
+							m_push_speed * std::sin(Utilise::toRadian(getRotation())));
 	}
 public:
 	// The acceleration ~ force applied to the back
@@ -62,7 +62,7 @@ class Rider : public Entity, public sf::Drawable
 public:
 	Rider(float jet_strength, float steer_force)
 		: Entity(steer_force)
-		, m_body(sf::Vector2f(10, 20))
+		, m_body(sf::Vector2f(20, 10))
 		, m_straight_acceleration(jet_strength)
 		, m_thrust(false)
 		, m_image_count(20)
@@ -206,11 +206,11 @@ public:
 			m_cursor.setPosition(m_intercept_point);
 		}
 		dis = Utilise::normalise(translate(dis));
-		if (dis.x >= 0.1f)
-			steer = Entity::LEFT;
-		else if (dis.x <= -0.1f)
+		if (dis.y >= 0.1f)
 			steer = Entity::RIGHT;
-		else if (dis.y < 0)
+		else if (dis.y <= -0.1f)
+			steer = Entity::LEFT;
+		else if (dis.x < 0)
 			steer = Entity::LEFT;
 		else
 			steer = Entity::NONE;
@@ -222,7 +222,7 @@ private:
 		float rot = getRotation();
 		return sf::Vector2f(
 			point.x * std::cos(Utilise::toRadian(rot)) + point.y * std::sin(Utilise::toRadian(rot)),
-			-point.x * std::sin(Utilise::toRadian(rot)) + point.y * std::cos(Utilise::toRadian(rot)));
+			point.y * std::cos(Utilise::toRadian(rot)) - point.x * std::sin(Utilise::toRadian(rot)));
 	}
 	
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override
@@ -247,9 +247,9 @@ int main()
 	sf::Time total = elapsed;
 	sf::Time TPF = sf::seconds(1.f / 60);
 
-	Rider bao(300, 350);
+	Rider bao(1200, 150);
 	bao.setPosition(300, 300);
-	Chaser killer(&bao, 150,350);
+	Chaser killer(&bao, 900, 150);
 	killer.setPosition(sf::Vector2f());
 
 	while (win.isOpen())

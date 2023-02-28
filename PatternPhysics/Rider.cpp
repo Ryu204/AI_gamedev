@@ -11,7 +11,7 @@ Entity::Entity(float jet_strength, float steer_force)
 	, direction(-90)
 	, m_steer_value(steer_force)
 	, m_push_speed(0)
-	, m_drag_constant(0.7f)
+	, m_drag_constant(0.05f)
 {
 	setPosition(500.f, 500.f);
 	setRotation(-90);
@@ -31,7 +31,7 @@ void Entity::update(sf::Time dt)
 	}
 	if (thruster)
 		m_push_speed += push_acceleration * dt.asSeconds();
-	m_push_speed += (-m_drag_constant * m_push_speed) * dt.asSeconds();
+	m_push_speed += (-m_drag_constant * m_push_speed * m_push_speed) * dt.asSeconds();
 	m_push_speed = std::max(0.f, m_push_speed);
 	sf::Vector2f velocity(m_push_speed * std::sin(Utilise::toRadian(-getRotation())),
 		m_push_speed * std::cos(Utilise::toRadian(-getRotation())));

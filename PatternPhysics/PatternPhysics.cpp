@@ -117,7 +117,7 @@ int main()
 	sf::Time total = elapsed;
 	sf::Time TPF = sf::seconds(1.f / 60);
 
-	Guard bao(300, 300);
+	Guard bao(1300, 300);
 	bao.setPosition(0, 0);
 	while (win.isOpen())
 	{

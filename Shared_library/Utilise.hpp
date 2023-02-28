@@ -31,6 +31,12 @@ namespace Utilise
 	}
 
 	template<typename T>
+	T product(sf::Vector2<T> a, sf::Vector2<T> b)
+	{
+		return a.x * b.x + a.y * b.y;
+	}
+
+	template<typename T>
 	T lerp(T start, T end, float t)
 	{
 		return start + (end - start) * t;

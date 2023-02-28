@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Pattern", "Pattern\Pattern.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PatternPhysics", "PatternPhysics\PatternPhysics.vcxproj", "{8ECA673C-E11D-4E97-94B3-A66C5C95F419}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Flocking", "Flocking\Flocking.vcxproj", "{E0FCD22D-CD62-4C99-9185-25228FFCE4BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -63,6 +65,14 @@ Global
 		{8ECA673C-E11D-4E97-94B3-A66C5C95F419}.Release|x64.Build.0 = Release|x64
 		{8ECA673C-E11D-4E97-94B3-A66C5C95F419}.Release|x86.ActiveCfg = Release|Win32
 		{8ECA673C-E11D-4E97-94B3-A66C5C95F419}.Release|x86.Build.0 = Release|Win32
+		{E0FCD22D-CD62-4C99-9185-25228FFCE4BB}.Debug|x64.ActiveCfg = Debug|x64
+		{E0FCD22D-CD62-4C99-9185-25228FFCE4BB}.Debug|x64.Build.0 = Debug|x64
+		{E0FCD22D-CD62-4C99-9185-25228FFCE4BB}.Debug|x86.ActiveCfg = Debug|Win32
+		{E0FCD22D-CD62-4C99-9185-25228FFCE4BB}.Debug|x86.Build.0 = Debug|Win32
+		{E0FCD22D-CD62-4C99-9185-25228FFCE4BB}.Release|x64.ActiveCfg = Release|x64
+		{E0FCD22D-CD62-4C99-9185-25228FFCE4BB}.Release|x64.Build.0 = Release|x64
+		{E0FCD22D-CD62-4C99-9185-25228FFCE4BB}.Release|x86.ActiveCfg = Release|Win32
+		{E0FCD22D-CD62-4C99-9185-25228FFCE4BB}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,5 +87,6 @@ Global
 		Shared_library\Shared_library.vcxitems*{8eca673c-e11d-4e97-94b3-a66c5c95f419}*SharedItemsImports = 4
 		Shared_library\Shared_library.vcxitems*{bfb29798-98a6-47d9-af79-3b6e3b21cbb9}*SharedItemsImports = 4
 		Shared_library\Shared_library.vcxitems*{bffbc3f7-3a3e-4e83-ab0a-026d1ea2b4e3}*SharedItemsImports = 4
+		Shared_library\Shared_library.vcxitems*{e0fcd22d-cd62-4c99-9185-25228ffce4bb}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal
